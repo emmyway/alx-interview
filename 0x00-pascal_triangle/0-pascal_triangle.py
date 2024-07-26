@@ -1,4 +1,4 @@
- #!/usr/bin/python3
+#!/usr/bin/python3
 
 def pascal_triangle(n):
     '''
@@ -8,10 +8,12 @@ def pascal_triangle(n):
     n (int): The number of rows in Pascal's triangle to generate.
 
     Returns:
-    List[List[int]]: A list of lists representing Pascal's triangle, Return an empty list
+    List[List[int]]: A list of lists representing Pascal's triangle,
+    Return an empty list
     '''
+
     if n <= 0:
-        return[]
+        return []
 
     # Initialize Pascal's triangle withthe first row
     triangle = [[1]]
@@ -24,7 +26,7 @@ def pascal_triangle(n):
         # compute the values for the current row
         for j in range(1, i):
             # each value is the sum of the two values directly above it
-            row.append(triangle[i-1][j-1]+ triangle[i-1][j])
+            row.append(triangle[i-1][j-1] + triangle[i-1][j])
 
         # end the row with a 1
         row.append(1)
