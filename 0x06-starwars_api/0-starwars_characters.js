@@ -1,44 +1,33 @@
 #!/usr/bin/node
 
-// Import the request module
 const request = require('request');
+const apiUrl = `https://swapi-api.alx-tools.com/api/films/${process.argv[2]}/`;
 
-// Access the Movie ID from command-line arguments
-const movieId = process.argv[2];
-
-// Verify that a Movie ID has been provided
-if (!movieId) {
-  console.error('Usage: ./0-starwars_characters.js <movie_id>');
-  process.exit(1);
-}
-
-// Define the URL to fetch movie details using the Movie ID
-const apiUrl = `https://swapi.dev/api/films/${movieId}/`;
-
-// Make a request to the Star Wars API for the movie details
+// Fetch movie data from the Star Wars API
 request(apiUrl, (error, response, body) => {
-  if (error) {
-    console.error('Error fetching movie:', error);
-    return;
-  }
+  if (!error && response.statusCode === 200) {
+    const characters = JSON.parse(body).characters;
 
-  // Parse the API response body as JSON
-  const movieData = JSON.parse(body);
-
-  // Extract the list of character URLs from the movie data
-  const characters = movieData.characters;
-
-  // For each character URL, make another request to fetch character details
-  characters.forEach((characterUrl) => {
-    request(characterUrl, (error, response, body) => {
-      if (error) {
-        console.error('Error fetching character:', error);
-        return;
-      }
-
-      // Parse the character data and print the name
-      const characterData = JSON.parse(body);
-      console.log(characterData.name);
+    // Array to hold the character names in the correct order
+    const promises = characters.map(url => {
+      return new Promise((resolve, reject) => {
+        request(url, (err, res, bod) => {
+          if (!err && res.statusCode === 200) {
+            resolve(JSON.parse(bod).name);
+          } else {
+            reject(err);
+          }
+        });
+      });
     });
-  });
+
+    // Resolve all promises and log the characters in order
+    Promise.all(promises)
+      .then(names => {
+        names.forEach(name => console.log(name));
+      })
+      .catch(error => console.log(error));
+  } else {
+    console.log(error);
+  }
 });
