@@ -3,6 +3,7 @@
 Prime Game
 """
 
+
 def sieve_of_eratosthenes(n):
     """ Returns a list of primes up to n using the Sieve of Eratosthenes """
     sieve = [True] * (n + 1)
